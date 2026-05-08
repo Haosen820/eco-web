@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绿色校园，低碳生活</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #388E3C;
+            --light-green: #E8F5E9;
+            --white: #FFFFFF;
+            --text-color: #333333;
+            --light-gray: #F5F5F5;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+        }
+
+        nav {
+            background-color: var(--primary-color);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #C8E6C9;
+        }
+
+        .menu-toggle {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .banner {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .banner-slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .banner-slide {
+            min-width: 100%;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .banner-slide:nth-child(1) {
+            background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.6)), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200');
+        }
+
+        .banner-slide:nth-child(2) {
+            background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.6)), url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200');
+        }
+
+        .banner-slide:nth-child(3) {
+            background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.6)), url('https://images.unsplash.com/photo-1458682625221-3a45f8a844c7?w=1200');
+        }
+
+        .banner-content {
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .banner-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .banner-content p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .banner-btn {
+            display: inline-block;
+            background-color: var(--white);
+            color: var(--primary-color);
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .banner-btn:hover {
+            background-color: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .banner-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .indicator.active {
+            background-color: var(--white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--white);
+            font-size: 2rem;
+        }
+
+        .card-header.green { background-color: #4CAF50; }
+        .card-header.blue { background-color: #2196F3; }
+        .card-header.red { background-color: #F44336; }
+        .card-header.yellow { background-color: #FFC107; }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .card-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: var(--light-green);
+            padding: 0 1.5rem;
+        }
+
+        .card-details.active {
+            max-height: 200px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .card-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card-details li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .card-details li:last-child {
+            border-bottom: none;
+        }
+
+        .expand-icon {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .expand-icon.active {
+            transform: rotate(180deg);
+        }
+
+        .checkin-section {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .checkin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .checkin-item {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--light-green);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .checkin-item:hover {
+            background-color: #C8E6C9;
+        }
+
+        .checkin-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .checkin-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .checkin-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .checkin-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .checkin-btn.checked {
+            background-color: #9E9E9E;
+            cursor: not-allowed;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .ranking-section {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #EEE;
+            transition: background-color 0.3s;
+        }
+
+        .ranking-item:hover {
+            background-color: var(--light-green);
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .rank.gold { background-color: #FFD700; color: #8B6914; }
+        .rank.silver { background-color: #C0C0C0; color: #555; }
+        .rank.bronze { background-color: #CD7F32; color: #4A3728; }
+        .rank.other { background-color: #EEE; color: #666; }
+
+        .ranking-info {
+            flex: 1;
+        }
+
+        .ranking-name {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .ranking-class {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .ranking-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .footer-quote {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .footer-copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--primary-color);
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .banner-content h1 {
+                font-size: 2rem;
+            }
+
+            .banner-content p {
+                font-size: 1rem;
+            }
+
+            .banner {
+                height: 300px;
+            }
+
+            .banner-slide {
+                height: 300px;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <span>绿色校园</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#科普">科普</a></li>
+                <li><a href="#打卡">打卡</a></li>
+                <li><a href="#排行榜">排行榜</a></li>
+                <li><a href="game.html">🎮 游戏</a></li>
+            </ul>
+            <div class="menu-toggle" id="menuToggle">☰</div>
+        </div>
+    </nav>
+
+    <section id="home" class="banner">
+        <div class="banner-slides" id="bannerSlides">
+            <div class="banner-slide">
+                <div class="banner-content">
+                    <h1>绿色校园，低碳生活</h1>
+                    <p>让我们一起行动，共建美好校园环境</p>
+                    <a href="#科普" class="banner-btn">了解更多</a>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <div class="banner-content">
+                    <h1>垃圾分类，从我做起</h1>
+                    <p>正确分类垃圾，守护绿色家园</p>
+                    <a href="#科普" class="banner-btn">学习分类</a>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <div class="banner-content">
+                    <h1>低碳行动，每一天</h1>
+                    <p>点滴小事，汇聚环保力量</p>
+                    <a href="#打卡" class="banner-btn">立即打卡</a>
+                </div>
+            </div>
+        </div>
+        <div class="banner-indicators" id="bannerIndicators">
+            <span class="indicator active" data-index="0"></span>
+            <span class="indicator" data-index="1"></span>
+            <span class="indicator" data-index="2"></span>
+        </div>
+    </section>
+
+    <section id="科普" class="container">
+        <h2 class="section-title">📚 垃圾分类科普</h2>
+        <div class="cards-grid">
+            <div class="card" data-category="green">
+                <div class="card-header green">♻️</div>
+                <div class="card-body">
+                    <h3 class="card-title">可回收物</h3>
+                    <p class="card-description">可循环利用的废弃物，包括纸张、塑料、玻璃、金属等</p>
+                    <div class="card-details" id="detail-green">
+                        <ul>
+                            <li>📄 纸张类：报纸、书本、纸箱</li>
+                            <li>♦️ 塑料类：饮料瓶、塑料袋</li>
+                            <li>🔵 玻璃类：玻璃瓶、镜子</li>
+                            <li>⚪️ 金属类：易拉罐、金属罐头</li>
+                        </ul>
+                    </div>
+                    <span class="expand-icon" data-target="detail-green">▼</span>
+                </div>
+            </div>
+
+            <div class="card" data-category="blue">
+                <div class="card-header blue">🟦</div>
+                <div class="card-body">
+                    <h3 class="card-title">有害垃圾</h3>
+                    <p class="card-description">对人体健康或自然环境有害的废弃物</p>
+                    <div class="card-details" id="detail-blue">
+                        <ul>
+                            <li>🔋 电池类：充电电池、纽扣电池</li>
+                            <li>💊 药品类：过期药品、药品包装</li>
+                            <li>🧴 化妆品：过期化妆品、指甲油</li>
+                            <li>🖨️ 废旧电器：灯管、打印机墨盒</li>
+                        </ul>
+                    </div>
+                    <span class="expand-icon" data-target="detail-blue">▼</span>
+                </div>
+            </div>
+
+            <div class="card" data-category="red">
+                <div class="card-header red">🟥</div>
+                <div class="card-body">
+                    <h3 class="card-title">厨余垃圾</h3>
+                    <p class="card-description">易腐烂的生物质废弃物</p>
+                    <div class="card-details" id="detail-red">
+                        <ul>
+                            <li>🍎 果皮果核：苹果核、香蕉皮</li>
+                            <li>🥬 蔬菜废料：菜叶、菜根</li>
+                            <li>🍚 剩饭剩菜：米饭、骨头</li>
+                            <li>☕ 茶渣咖啡渣：茶叶渣、咖啡渣</li>
+                        </ul>
+                    </div>
+                    <span class="expand-icon" data-target="detail-red">▼</span>
+                </div>
+            </div>
+
+            <div class="card" data-category="yellow">
+                <div class="card-header yellow">🟨</div>
+                <div class="card-body">
+                    <h3 class="card-title">其他垃圾</h3>
+                    <p class="card-description">除以上三类外的其他生活废弃物</p>
+                    <div class="card-details" id="detail-yellow">
+                        <ul>
+                            <li>🚽 卫生纸：纸巾、湿巾</li>
+                            <li>🚮 塑料袋：污染的塑料袋</li>
+                            <li>🍬 口香糖：嚼过的口香糖</li>
+                            <li>🚲 陶瓷制品：碎陶瓷、花盆</li>
+                        </ul>
+                    </div>
+                    <span class="expand-icon" data-target="detail-yellow">▼</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="游戏" class="container">
+        <h2 class="section-title">🎮 垃圾分类闯关游戏</h2>
+        <div class="game-entry" style="background: linear-gradient(135deg, #4CAF50, #81C784); border-radius: 20px; padding: 3rem; text-align: center; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎯</div>
+            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">挑战垃圾分类小达人</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">点击垃圾桶，将垃圾正确分类。累计10分即可闯关成功！</p>
+            <a href="game.html" class="banner-btn" style="background: white; color: #4CAF50; padding: 1rem 2.5rem; border-radius: 30px; text-decoration: none; font-weight: bold; display: inline-block; transition: all 0.3s;">开始挑战</a>
+        </div>
+    </section>
+
+    <section id="打卡" class="container">
+        <h2 class="section-title">✅ 低碳行为打卡</h2>
+        <div class="checkin-section">
+            <div class="checkin-grid">
+                <div class="checkin-item">
+                    <div class="checkin-icon">🚶</div>
+                    <h4 class="checkin-title">步行上学</h4>
+                    <button class="checkin-btn" data-action="walk">立即打卡</button>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-icon">💧</div>
+                    <h4 class="checkin-title">节约用水</h4>
+                    <button class="checkin-btn" data-action="water">立即打卡</button>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-icon">💡</div>
+                    <h4 class="checkin-title">随手关灯</h4>
+                    <button class="checkin-btn" data-action="light">立即打卡</button>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-icon">🍱</div>
+                    <h4 class="checkin-title">自带餐具</h4>
+                    <button class="checkin-btn" data-action="utensils">立即打卡</button>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-icon">♻️</div>
+                    <h4 class="checkin-title">垃圾分类</h4>
+                    <button class="checkin-btn" data-action="recycle">立即打卡</button>
+                </div>
+                <div class="checkin-item">
+                    <div class="checkin-icon">🌱</div>
+                    <h4 class="checkin-title">种植绿植</h4>
+                    <button class="checkin-btn" data-action="plant">立即打卡</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="排行榜" class="container">
+        <h2 class="section-title">🏆 环保排行榜</h2>
+        <div class="ranking-section">
+            <ul class="ranking-list">
+                <li class="ranking-item">
+                    <span class="rank gold">1</span>
+                    <div class="ranking-info">
+                        <div class="ranking-name">张小明</div>
+                        <div class="ranking-class">高一(3)班</div>
+                    </div>
+                    <div class="ranking-score">280分</div>
+                </li>
+                <li class="ranking-item">
+                    <span class="rank silver">2</span>
+                    <div class="ranking-info">
+                        <div class="ranking-name">李小红</div>
+                        <div class="ranking-class">高二(1)班</div>
+                    </div>
+                    <div class="ranking-score">256分</div>
+                </li>
+                <li class="ranking-item">
+                    <span class="rank bronze">3</span>
+                    <div class="ranking-info">
+                        <div class="ranking-name">王小华</div>
+                        <div class="ranking-class">高三(2)班</div>
+                    </div>
+                    <div class="ranking-score">245分</div>
+                </li>
+                <li class="ranking-item">
+                    <span class="rank other">4</span>
+                    <div class="ranking-info">
+                        <div class="ranking-name">赵小丽</div>
+                        <div class="ranking-class">高一(5)班</div>
+                    </div>
+                    <div class="ranking-score">220分</div>
+                </li>
+                <li class="ranking-item">
+                    <span class="rank other">5</span>
+                    <div class="ranking-info">
+                        <div class="ranking-name">孙小强</div>
+                        <div class="ranking-class">高二(4)班</div>
+                    </div>
+                    <div class="ranking-score">208分</div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-quote">"绿色校园，从我做起；低碳生活，点滴积累"</div>
+        <div class="footer-copyright">© 2024 绿色校园环保行动 | 共建美好校园</div>
+    </footer>
+
+    <div class="toast" id="toast">打卡成功！+10分</div>
+
+    <script>
+        const navLinks = document.getElementById('navLinks');
+        const menuToggle = document.getElementById('menuToggle');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        const bannerSlides = document.getElementById('bannerSlides');
+        const indicators = document.querySelectorAll('.indicator');
+        let currentSlide = 0;
+
+        function goToSlide(index) {
+            bannerSlides.style.transform = `translateX(-${index * 100}%)`;
+            indicators.forEach((ind, i) => {
+                ind.classList.toggle('active', i === index);
+            });
+            currentSlide = index;
+        }
+
+        indicators.forEach((ind, i) => {
+            ind.addEventListener('click', () => goToSlide(i));
+        });
+
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % indicators.length;
+            goToSlide(currentSlide);
+        }, 4000);
+
+        const expandIcons = document.querySelectorAll('.expand-icon');
+        expandIcons.forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const targetId = icon.dataset.target;
+                const detail = document.getElementById(targetId);
+                detail.classList.toggle('active');
+                icon.classList.toggle('active');
+            });
+        });
+
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const icon = card.querySelector('.expand-icon');
+                const targetId = icon.dataset.target;
+                const detail = document.getElementById(targetId);
+                detail.classList.toggle('active');
+                icon.classList.toggle('active');
+            });
+        });
+
+        const checkinBtns = document.querySelectorAll('.checkin-btn');
+        const toast = document.getElementById('toast');
+
+        checkinBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.classList.contains('checked')) return;
+                
+                btn.classList.add('checked');
+                btn.textContent = '已打卡';
+                
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
