@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园垃圾分类闯关游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --light-green: #E8F5E9;
+            --white: #FFFFFF;
+            --text: #333333;
+            --recyclable: #2196F3;
+            --hazardous: #F44336;
+            --kitchen: #FF9800;
+            --other: #9E9E9E;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            background-attachment: fixed;
+        }
+
+        .game-header {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .game-title {
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .score-display {
+            background: var(--white);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .game-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .game-area {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            background: #E0E0E0;
+            border-radius: 10px;
+            height: 20px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #81C784);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .trash-display {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .trash-card {
+            display: inline-block;
+            background: linear-gradient(145deg, #FFFFFF, #F5F5F5);
+            border-radius: 20px;
+            padding: 2rem 3rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 3px solid var(--light-green);
+            transition: transform 0.3s;
+        }
+
+        .trash-card:hover {
+            transform: scale(1.05);
+        }
+
+        .trash-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .trash-name {
+            font-size: 1.3rem;
+            color: var(--text);
+            font-weight: bold;
+        }
+
+        .instruction {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bins-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .bin {
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 15px;
+            background: var(--light-green);
+        }
+
+        .bin:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .bin-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .bin-label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .bin.recyclable { border: 3px solid var(--recyclable); }
+        .bin.recyclable:hover { background: #E3F2FD; }
+        .bin.hazardous { border: 3px solid var(--hazardous); }
+        .bin.hazardous:hover { background: #FFEBEE; }
+        .bin.kitchen { border: 3px solid var(--kitchen); }
+        .bin.kitchen:hover { background: #FFF3E0; }
+        .bin.other { border: 3px solid var(--other); }
+        .bin.other:hover { background: #F5F5F5; }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--white);
+            z-index: 100;
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background: var(--primary);
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .feedback.wrong {
+            background: #F44336;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .success-overlay.show {
+            display: flex;
+        }
+
+        .success-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            margin: 1rem;
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .success-icon {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .success-message {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .success-score {
+            font-size: 3rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #9E9E9E;
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: #757575;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 1rem 0;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .question-counter {
+            text-align: center;
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .bins-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trash-icon {
+                font-size: 4rem;
+            }
+
+            .trash-card {
+                padding: 1.5rem 2rem;
+            }
+
+            .bin-icon {
+                font-size: 2.5rem;
+            }
+
+            .success-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-header">
+        <div class="game-title">
+            <span>🎮</span>
+            <span>垃圾分类闯关</span>
+        </div>
+        <div class="score-display">
+            得分: <span id="score">0</span>/10
+        </div>
+    </div>
+
+    <div class="game-container">
+        <a href="index.html" class="back-link">← 返回首页</a>
+
+        <div class="game-area">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="question-counter">
+                第 <span id="currentQuestion">1</span> 题 / 共 10 题
+            </div>
+
+            <div class="trash-display">
+                <div class="trash-card">
+                    <span class="trash-icon" id="trashIcon">🍎</span>
+                    <span class="trash-name" id="trashName">苹果核</span>
+                </div>
+            </div>
+
+            <p class="instruction">请选择这个垃圾应该丢进哪个垃圾桶？</p>
+
+            <div class="bins-container">
+                <div class="bin recyclable" data-type="recyclable">
+                    <span class="bin-icon">♻️</span>
+                    <span class="bin-label">可回收物</span>
+                </div>
+                <div class="bin hazardous" data-type="hazardous">
+                    <span class="bin-icon">⚠️</span>
+                    <span class="bin-label">有害垃圾</span>
+                </div>
+                <div class="bin kitchen" data-type="kitchen">
+                    <span class="bin-icon">🍂</span>
+                    <span class="bin-label">厨余垃圾</span>
+                </div>
+                <div class="bin other" data-type="other">
+                    <span class="bin-icon">🗑️</span>
+                    <span class="bin-label">其他垃圾</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            <div class="success-title">闯关成功！</div>
+            <div class="success-message">恭喜你成为垃圾分类小达人！</div>
+            <div class="success-score" id="finalScore">10分</div>
+            <button class="btn" onclick="restartGame()">再来一局</button>
+            <button class="btn btn-secondary" onclick="goHome()">返回首页</button>
+        </div>
+    </div>
+
+    <script>
+        const trashItems = [
+            { icon: '🍎', name: '苹果核', type: 'kitchen' },
+            { icon: '📰', name: '旧报纸', type: 'recyclable' },
+            { icon: '🔋', name: '废电池', type: 'hazardous' },
+            { icon: '🥡', name: '外卖餐盒', type: 'other' },
+            { icon: '🥬', name: '烂菜叶', type: 'kitchen' },
+            { icon: '📚', name: '旧书本', type: 'recyclable' },
+            { icon: '💊', name: '过期药品', type: 'hazardous' },
+            { icon: '🧴', name: '洗发水瓶', type: 'recyclable' },
+            { icon: '🍌', name: '香蕉皮', type: 'kitchen' },
+            { icon: '🚬', name: '烟蒂', type: 'other' },
+            { icon: '🖨️', name: '废弃墨盒', type: 'hazardous' },
+            { icon: '🥤', name: '饮料瓶', type: 'recyclable' },
+            { icon: '🦴', name: '大骨头', type: 'kitchen' },
+            { icon: '🧸', name: '旧玩具', type: 'other' },
+            { icon: '💡', name: '节能灯管', type: 'hazardous' },
+            { icon: '👕', name: '旧衣服', type: 'recyclable' },
+            { icon: '🍳', name: '蛋壳', type: 'kitchen' },
+            { icon: '📦', name: '快递纸箱', type: 'recyclable' },
+            { icon: '🧴', name: '杀虫剂罐', type: 'hazardous' },
+            { icon: '🚿', name: '用完的沐浴露', type: 'other' },
+            { icon: '🍜', name: '方便面盒', type: 'other' },
+            { icon: '🥫', name: '金属罐头', type: 'recyclable' },
+            { icon: '🍖', name: '剩菜剩饭', type: 'kitchen' },
+            { icon: '🖍️', name: '废旧蜡笔', type: 'other' },
+            { icon: '🔌', name: '废弃电线', type: 'recyclable' },
+            { icon: '🧪', name: '过期化妆品', type: 'hazardous' },
+            { icon: '🌿', name: '枯萎的花', type: 'kitchen' },
+            { icon: '📱', name: '旧手机', type: 'recyclable' },
+            { icon: '🩹', name: '创可贴', type: 'other' },
+            { icon: '☀️', name: '过期酸奶', type: 'kitchen' }
+        ];
+
+        let score = 0;
+        let currentQuestion = 0;
+        let usedItems = [];
+        let gameActive = true;
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function getNextTrash() {
+            if (usedItems.length >= trashItems.length) {
+                usedItems = [];
+            }
+
+            const available = trashItems.filter(item => !usedItems.includes(item));
+            const shuffled = shuffleArray(available);
+            const nextItem = shuffled[0];
+            usedItems.push(nextItem);
+
+            return nextItem;
+        }
+
+        function updateDisplay() {
+            const trash = getNextTrash();
+            document.getElementById('trashIcon').textContent = trash.icon;
+            document.getElementById('trashName').textContent = trash.name;
+            document.getElementById('trashIcon').dataset.type = trash.type;
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+            document.getElementById('progressFill').style.width = `${(score / 10) * 100}%`;
+        }
+
+        function showFeedback(isCorrect) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = isCorrect ? '✅ 正确！+1分' : '❌ 错误！';
+            feedback.className = `feedback show ${isCorrect ? 'correct' : 'wrong'}`;
+
+            setTimeout(() => {
+                feedback.className = 'feedback';
+            }, 1000);
+        }
+
+        function checkAnswer(selectedType) {
+            if (!gameActive) return;
+
+            const correctType = document.getElementById('trashIcon').dataset.type;
+
+            if (selectedType === correctType) {
+                score++;
+                document.getElementById('score').textContent = score;
+                showFeedback(true);
+
+                if (score >= 10) {
+                    gameActive = false;
+                    setTimeout(() => {
+                        showSuccess();
+                    }, 800);
+                    return;
+                }
+            } else {
+                showFeedback(false);
+            }
+
+            currentQuestion++;
+            setTimeout(updateDisplay, 800);
+        }
+
+        function showSuccess() {
+            document.getElementById('finalScore').textContent = `${score}分`;
+            document.getElementById('successOverlay').classList.add('show');
+        }
+
+        function restartGame() {
+            score = 0;
+            currentQuestion = 0;
+            usedItems = [];
+            gameActive = true;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('successOverlay').classList.remove('show');
+            updateDisplay();
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        document.querySelectorAll('.bin').forEach(bin => {
+            bin.addEventListener('click', () => {
+                checkAnswer(bin.dataset.type);
+            });
+        });
+
+        updateDisplay();
+    </script>
+</body>
+</html>
